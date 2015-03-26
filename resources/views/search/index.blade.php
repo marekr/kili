@@ -10,23 +10,9 @@
 		</div>
 	</div>
 	<div class="row">
-		<h2>Components</h2>
-		<table class="table table-striped">
-			<thead>
-				<th>Library</th>
-				<th>Name</th>
-				<th>Type</th>
-			</thead>
-			<tbody>
-			@foreach ($results as $component)
-				
-					<td>{{ $component->library->name }} </td>
-					<td>{{ $component->name }}</td>
-					<td>eeschema</td>
-				</tr>
-			@endforeach
-			</tbody>
-		</table>
+		@foreach ($results as $component)
+			@include('search.result_component', ['component' => $component])
+		@endforeach
 	</div>
 </div>
 @endsection
