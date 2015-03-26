@@ -2,14 +2,19 @@
 
 use File;
 use Exception;
+use SplFileInfo;
 
 class EeschemaLibraryReader {
 
+	public $name = '';
 	public $components = array();
 	
 	public function read( $file )
 	{
 		$data = File::get( $file );
+		
+		$spl = new SplFileInfo($file);
+		$this->name = $spl->getBasename('.'.$spl->getExtension());
 		
 		$data = explode( "\n", $data );
 		

@@ -8,6 +8,8 @@ use File;
 use Exception;
 use App\Package;
 use App\Kicad\EeschemaLibraryReader;
+use App\Component;
+use App\Library;
 
 class PackagesUpdate extends Command {
 
@@ -56,7 +58,7 @@ class PackagesUpdate extends Command {
 			}
 			$git->setRepository($path);
 			//$git->pull();
-			$this->parseLibraries($path);
+			$this->parseLibraries($package, $path);
 			
 			//foreach ($git->tree('master') as $object) {
 			//	echo $git->show($object['file']);
@@ -67,27 +69,46 @@ class PackagesUpdate extends Command {
 		}
 	}
 	
-	private function parseLibraries($path)
+	private function parseLibraries(Package $package, $path)
 	{
 		$files = File::allFiles($path);
 		foreach ($files as $file)
 		{
 			if( $file->getExtension() == "lib" )
 			{
-				echo (string)$file, "\n";
-			
-				try
+				$lib = new EeschemaLibraryReader();
+				$lib->read( $file );
+				
+				echo "Parsed " . (string)$file . "\n";
+				$library = $package->libraries()->where('name', $lib->name)->first();
+				
+				if( $library == null )
 				{
-					$lib = new EeschemaLibraryReader();
-					$lib->read( $file );
+					$library = new Library;
+					$library->package_id = $package->id;
+					$library->name = $lib->name;
+					$library->save();
 				}
-				catch(Exception $e)
+				
+				if( count($lib->components) > 0 )
 				{
+					foreach($lib->components as $comp)
+					{
+						$component = $library->components->where('name', $comp->name)->first();
+						if( $component == null )
+						{
+							$component = new Component;
+							$component->name = $comp->name;
+							$component->prefix = $comp->prefix;
+							$component->library_id = $library->id;
+							$component->unit_count = $comp->unitCount;
+							$component->draw_numbers = $comp->drawNum;
+							$component->draw_names = $comp->drawName;
+							$component->pin_name_offset = $comp->pinNameOffset;
+							$component->save();
+						}
+					}
 				}
-			}
-			else if( $file->getExtension() == "dcm" )
-			{
-				echo (string)$file, "\n";
 			}
 		}
 	}
