@@ -6,7 +6,8 @@
 	"type": "project",
 	"require": {
 		"laravel/framework": "5.0.*",
-        "kzykhys/git": "dev-master"
+        "kzykhys/git": "dev-master",
+        "imagine/imagine": "0.6.2"
 	},
 	"require-dev": {
 		"phpunit/phpunit": "~4.0",

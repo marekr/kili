@@ -34,6 +34,11 @@ class EeschemaLibraryReader {
 				$buffer = array();
 			}
 			
+			if( $reading )
+			{
+				$buffer[] = $data[$i];
+			}
+			
 			if( strpos($data[$i], "ENDDEF") === 0 )
 			{
 				$reading = false;
@@ -41,11 +46,6 @@ class EeschemaLibraryReader {
 				$part->parseRaw( $buffer );
 				$this->components[] = $part;
 				continue;
-			}
-			
-			if( $reading )
-			{
-				$buffer[] = $data[$i];
 			}
 		}
 	}
@@ -58,7 +58,8 @@ class EeschemaComponent {
 	public $pinNameOffset;
 	public $drawNum = false;
 	public $drawName = false;
-	public $unitCount;
+	public $unitCount = 1;
+	public $raw = "";
 	
 	public function parseRaw( array $raw )
 	{
@@ -109,5 +110,7 @@ class EeschemaComponent {
 			}
 			
 		}	
+		
+		$this->raw = implode("\n",$raw);
 	}
 }

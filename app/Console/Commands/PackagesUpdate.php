@@ -105,6 +105,7 @@ class PackagesUpdate extends Command {
 							$component->draw_numbers = $comp->drawNum;
 							$component->draw_names = $comp->drawName;
 							$component->pin_name_offset = $comp->pinNameOffset;
+							$component->raw = $comp->raw;
 							$component->save();
 						}
 					}
