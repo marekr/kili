@@ -1,11 +1,13 @@
 <?php namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
-use File;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Input\InputArgument;
 use PHPGit\Git;
+use File;
+use Exception;
 use App\Package;
+use App\Kicad\EeschemaLibraryReader;
 
 class PackagesUpdate extends Command {
 
@@ -73,6 +75,15 @@ class PackagesUpdate extends Command {
 			if( $file->getExtension() == "lib" )
 			{
 				echo (string)$file, "\n";
+			
+				try
+				{
+					$lib = new EeschemaLibraryReader();
+					$lib->read( $file );
+				}
+				catch(Exception $e)
+				{
+				}
 			}
 			else if( $file->getExtension() == "dcm" )
 			{
