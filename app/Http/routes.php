@@ -14,6 +14,7 @@
 Route::get('/', 'HomeController@index');
 
 Route::get('package/{id}', 'PackageController@overview');
+Route::get('search', 'SearchController@index');
 
 Route::controllers([
 	'auth' => 'Auth\AuthController',

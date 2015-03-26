@@ -2,23 +2,30 @@
 
 @section('content')
 
+
 <div class="container">
 	<div class="row">
 		<div class="page-header">
-			<h1>{{ $package->name }}</h1>
+			<h1>Search for {{ $query }}</h1>
 		</div>
-		<p class="lead">{{ $package->description }}</p>
-		<p>
-			<strong>Repository URL:</strong> {{ $package->repository_url }}
-		</p>
 	</div>
 	<div class="row">
-		<h2>Libraries</h2>
+		<h2>Components</h2>
 		<table class="table table-striped">
 			<thead>
+				<th>Library</th>
 				<th>Name</th>
 				<th>Type</th>
 			</thead>
+			<tbody>
+			@foreach ($results as $component)
+				
+					<td>{{ $component->library->name }} </td>
+					<td>{{ $component->name }}</td>
+					<td>eeschema</td>
+				</tr>
+			@endforeach
+			</tbody>
 		</table>
 	</div>
 </div>

@@ -14,13 +14,14 @@
 		<h1>Find your KiCad libraries, components and footprints!</h1>
 	</div>
 	<div class="row">
-		
-		<div class="input-group">
-			<input type="text" class="form-control" placeholder="Search libraries....">
-			<span class="input-group-btn">
-				<button class="btn btn-default" type="button"><span class="glyphicon glyphicon-search" aria-hidden="true"></span></button>
-			</span>
-		</div><!-- /input-group -->
+		<form method="get" action="{{ url('/search') }}">
+			<div class="input-group">
+				<input type="text" class="form-control" name="q" placeholder="Search libraries....">
+				<span class="input-group-btn">
+					<button class="btn btn-default" type="submit"><span class="glyphicon glyphicon-search" aria-hidden="true"></span></button>
+				</span>
+			</div>
+		</form>
 	</div>
 </div>
 @endsection

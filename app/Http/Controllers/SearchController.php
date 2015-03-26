@@ -1,5 +1,9 @@
 <?php namespace App\Http\Controllers;
 
+use Input;
+use DB;
+use App\Component;
+
 class SearchController extends Controller {
 
 	/*
@@ -29,7 +33,27 @@ class SearchController extends Controller {
 	 */
 	public function index()
 	{
-		return view('search');
+		$q = Input::get('q');
+		
+		$searchTerms = explode(' ', $q);
+
+		$query = null;
+
+		foreach($searchTerms as $term)
+		{
+			if( $query == null )
+			{
+				$query = Component::with('library')->where('name', 'LIKE', '%'. $term .'%');
+			}
+			else
+			{
+				$query->where('name', 'LIKE', '%'. $term .'%');
+			}
+		}
+
+		$results = $query->get();
+		
+		return view('search.index', ['query' => $q, 'results' => $results]);
 	}
 
 }
