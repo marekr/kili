@@ -9,5 +9,10 @@ class Component extends Model {
     {
         return $this->belongsTo('App\Library');
     }
+	
+	public function package()
+	{
+		return $this->library->package();
+	}
 
 }

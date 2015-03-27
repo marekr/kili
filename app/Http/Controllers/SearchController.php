@@ -43,7 +43,7 @@ class SearchController extends Controller {
 		{
 			if( $query == null )
 			{
-				$query = Component::with('library')->where('name', 'LIKE', '%'. $term .'%');
+				$query = Component::with('library')->with('package')->where('name', 'LIKE', '%'. $term .'%');
 			}
 			else
 			{

@@ -22,24 +22,24 @@ class EeschemaComponent {
 	public $drawName = false;
 	public $unitCount = 1;
 	public $raw = "";
-	
+	const TXTMARGE  = 10;
 	public $drawItems = array();
 	
 	public function transX($x)
 	{
-		return $x + 300;
+		return $x + 250;
 	}
 	
 	public function transY($y)
 	{
-		return $y + 300;
+		return 250 - $y;
 	}
 	
 	public function draw()
 	{
 		$attributesSvg = array(
-							'width' => 1000,
-							'height' => 1000
+							'width' => '100%',
+							'height' => '100%'
 						  );
 		$svg = new \SVGCreator\Elements\Svg($attributesSvg);
 		
@@ -53,12 +53,15 @@ class EeschemaComponent {
 				$svg->append(new \SVGCreator\Elements\Rect())
 					->attr('width', $width)
 					->attr('height', $height)
-					->attr('fill', '#ff0000')
+					->attr('fill', '#ffffff')
+					->attr('stroke-width', $draw->Width/3)
+					->attr('stroke', '#000000')
 					->attr('x', $this->transX($draw->PositionX))
 					->attr('y', $this->transY($draw->PositionY));
 			}
 			else if( $draw->ShapeType == ShapeType::PIN )
 			{
+				$this->drawPinSymbol($svg, $draw);
 				$this->drawPinText($svg, $draw);
 			}
 		}
@@ -86,31 +89,118 @@ class EeschemaComponent {
 	//	return $image;
 	}
 	
-	private function drawPinText($svg, $draw)
+	private function drawPinSymbol($svg, $draw)
 	{
-		$x = $this->transX($draw->PositionX);
-		$y = $this->transY($draw->PositionY);
+		$x = $x1 = $mapX1 = $this->transX($draw->PositionX);
+		$y = $y1 = $mapY1 = $this->transY($draw->PositionY);
+		
 		switch( $draw->Orientation )
 		{
 			case 'U':
-				$y -= $draw->Length;
+				$y1 -= $draw->Length;
+				$mapY1 = 1;
 				break;
 			case 'D':
-				$y += $draw->Length;
-				break;
-			case 'R':
-				$x += $draw->Length;
+				$y1 += $draw->Length;
+				$mapY1 = -1;
 				break;
 			case 'L':
-				$x -= $draw->Length;
+				$x1 -= $draw->Length;
+				$mapX1 = 1;
+				break;
+			case 'R':
+				$x1 += $draw->Length;
+				$mapX1 = -1;
 				break;
 		}
 		
-		$svg->append(\SVGCreator\Element::TEXT)
-			->attr('x', $x)
-			->attr('y', $y)
-			->attr('fill', '#000000')
-			->text($draw->Name);
+		
+		$svg->append(\SVGCreator\Element::LINE)
+			->attr('x1', $x1)
+			->attr('y1', $y1)
+			->attr('x2', $x)
+			->attr('y2', $y)
+			->attr('stroke', '#000000');
+	}
+	
+	private function drawPinText($svg, $draw)
+	{
+		$x1 = $x = $this->transX($draw->PositionX);
+		$y1 = $y = $this->transY($draw->PositionY);
+		
+		switch( $draw->Orientation )
+		{
+			case 'U':
+				$y1 -= $draw->Length;
+				break;
+			case 'D':
+				$y1 += $draw->Length;
+				break;
+			case 'L':
+				$x1 -= $draw->Length;
+				break;
+			case 'R':
+				$x1 += $draw->Length;
+				break;
+		}
+		
+		$nX = $x1;
+		$nY = $y1;
+		if( $this->pinNameOffset )
+		{
+			if( $this->drawName )
+			{
+				if( $draw->Orientation == 'R' )
+				{
+					$nX = $x1 + $this->pinNameOffset;
+				}
+				else if( $draw->Orientation == 'L' )
+				{
+					$nX = $x1 - $this->pinNameOffset;
+				}
+				else if( $draw->Orientation == 'D' )
+				{
+					$nY = $y1 + $this->pinNameOffset;
+				}
+				else if( $draw->Orientation == 'U' )
+				{
+					$nY = $y1 - $this->pinNameOffset;
+				}
+				
+				$svg->append(\SVGCreator\Element::TEXT)
+					->attr('x', $nX)
+					->attr('y', $nY)
+					->attr('fill', '#000000')
+					->attr('font-size', $draw->NameTextSize)
+					->text($draw->Name);
+			}
+			
+			$nuX = 0;
+			$nuY = 0;
+			if( $this->drawNum )
+			{
+				if( $draw->Orientation == 'R' ||
+					$draw->Orientation == 'L' )
+				{
+					$nuX = ($x1 + $x)/2;
+					$nuY = $y1 - self::TXTMARGE;
+				}
+				else if( $draw->Orientation == 'D' ||
+							$draw->Orientation == 'U' )
+				{
+					$nuX = $x1 - self::TXTMARGE;
+					$nuY = ($y1 + $y)/2;
+				}
+				
+				$svg->append(\SVGCreator\Element::TEXT)
+					->attr('x', $nuX)
+					->attr('y', $nuY )
+					->attr('fill', '#000000')
+					->attr('font-size', $draw->NumberTextSize)
+					->text($draw->Number);
+			}
+		}
+		
 	}
 	
 	public function parseRaw( array $raw )
