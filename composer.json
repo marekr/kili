@@ -7,7 +7,8 @@
 	"require": {
 		"laravel/framework": "5.0.*",
         "kzykhys/git": "dev-master",
-        "imagine/imagine": "0.6.2"
+        "imagine/imagine": "0.6.2",
+		"tiolancaster/svgcreator": "dev-master"
 	},
 	"require-dev": {
 		"phpunit/phpunit": "~4.0",

@@ -4,7 +4,7 @@
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "c96e4afc46b07c15c6fb6caa939158d4",
+    "hash": "099da45447965547d14f6fd087b4c4f7",
     "packages": [
         {
             "name": "classpreloader/classpreloader",
@@ -513,16 +513,16 @@
         },
         {
             "name": "laravel/framework",
-            "version": "v5.0.20",
+            "version": "v5.0.21",
             "source": {
                 "type": "git",
                 "url": "https://github.com/laravel/framework.git",
-                "reference": "419d3f485ce7946cace4325ef19a30e1d5543951"
+                "reference": "d30ff645035856d145a0ac191f07151d20fe691a"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/laravel/framework/zipball/419d3f485ce7946cace4325ef19a30e1d5543951",
-                "reference": "419d3f485ce7946cace4325ef19a30e1d5543951",
+                "url": "https://api.github.com/repos/laravel/framework/zipball/d30ff645035856d145a0ac191f07151d20fe691a",
+                "reference": "d30ff645035856d145a0ac191f07151d20fe691a",
                 "shasum": ""
             },
             "require": {
@@ -635,7 +635,7 @@
                 "framework",
                 "laravel"
             ],
-            "time": "2015-03-24 13:36:37"
+            "time": "2015-03-26 19:09:29"
         },
         {
             "name": "league/flysystem",
@@ -969,16 +969,16 @@
         },
         {
             "name": "psy/psysh",
-            "version": "v0.4.3",
+            "version": "v0.4.4",
             "source": {
                 "type": "git",
                 "url": "https://github.com/bobthecow/psysh.git",
-                "reference": "b5dd7660c0ef38e96cd8cd8fa924b6be0e53906a"
+                "reference": "489816db71649bd95b416e3ed9062d40528ab0ac"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/bobthecow/psysh/zipball/b5dd7660c0ef38e96cd8cd8fa924b6be0e53906a",
-                "reference": "b5dd7660c0ef38e96cd8cd8fa924b6be0e53906a",
+                "url": "https://api.github.com/repos/bobthecow/psysh/zipball/489816db71649bd95b416e3ed9062d40528ab0ac",
+                "reference": "489816db71649bd95b416e3ed9062d40528ab0ac",
                 "shasum": ""
             },
             "require": {
@@ -1036,7 +1036,7 @@
                 "interactive",
                 "shell"
             ],
-            "time": "2015-03-17 15:17:33"
+            "time": "2015-03-26 18:43:54"
         },
         {
             "name": "swiftmailer/swiftmailer",
@@ -1856,6 +1856,47 @@
                 "dump"
             ],
             "time": "2015-03-06 16:45:31"
+        },
+        {
+            "name": "tiolancaster/svgcreator",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/TioLancaster/svgcreator.git",
+                "reference": "47e74e1c234936d3eb868d9077b3bec4300ed135"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/TioLancaster/svgcreator/zipball/47e74e1c234936d3eb868d9077b3bec4300ed135",
+                "reference": "47e74e1c234936d3eb868d9077b3bec4300ed135",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.3.10"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-0": {
+                    "SVGCreator": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Sérgio Diniz",
+                    "homepage": "https://github.com/TioLancaster"
+                }
+            ],
+            "description": "An simple SVG Generator",
+            "keywords": [
+                "creator",
+                "generator",
+                "svg"
+            ],
+            "time": "2014-12-14 18:18:06"
         },
         {
             "name": "vlucas/phpdotenv",
@@ -2978,7 +3019,8 @@
     "aliases": [],
     "minimum-stability": "stable",
     "stability-flags": {
-        "kzykhys/git": 20
+        "kzykhys/git": 20,
+        "tiolancaster/svgcreator": 20
     },
     "prefer-stable": false,
     "prefer-lowest": false,
