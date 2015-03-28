@@ -25,6 +25,8 @@ class EeschemaComponent {
 	const TXTMARGE  = 10;
 	public $drawItems = array();
 	
+	public $alias = array();
+	
 	public $minWidth = 0;
 	public $minHeight = 0;
 	
@@ -123,6 +125,12 @@ class EeschemaComponent {
 		$header = explode( " ", $header );
 		
 		list( $def, $this->name, $this->prefix, $unused, $this->pinNameOffset, $drawNum, $drawName, $this->unitCount ) = $header;
+		
+		$this->name = filter_var($this->name, FILTER_SANITIZE_STRING);
+		$this->prefix = filter_var($this->prefix, FILTER_SANITIZE_STRING);
+		$this->pinNameOffset = (int)$this->pinNameOffset;
+		$this->unitCount = (int)$this->unitCount;
+		
 		if( $drawNum == 'Y' )
 		{
 			$this->drawNum = true;
@@ -148,24 +156,38 @@ class EeschemaComponent {
 		
 		for( $i = 1; $i < count($raw); $i++ )
 		{
-			if( strpos($raw[ $i ],'#') === 0 )
+			$str = $raw[ $i ];
+			
+			if( strpos($str,'#') === 0 )
 				continue;
 			
-			if( strpos($raw[ $i ],'Ti') === 0 )
+			if( strpos($str,'Ti') === 0 )
 			{
 				//date time?
 			}
-			elseif( strpos($raw[ $i ],'F') === 0 )
+			elseif( strpos($str,'F') === 0 )
 			{
 				//date time?
 			}
-			elseif( strpos($raw[ $i ], 'DRAW') === 0 )
+			elseif( strpos($str, 'DRAW') === 0 )
 			{
 				$this->readDraw( $raw, $i );
+			}
+			elseif( strpos($str, 'ALIAS') === 0 )
+			{
+				$this->readAlias( substr($str,6) );
 			}
 		}	
 		
 		$this->raw = implode("\n",$raw);
+	}
+	
+	private function readAlias( $str )
+	{
+		$this->alias = array();
+		
+		$this->alias = explode(' ', $str);
+		$this->alias = filter_var_array($this->alias, FILTER_SANITIZE_STRING);
 	}
 	
 	private function readDraw( $raw, &$i )
@@ -312,6 +334,8 @@ class EeschemaComponentPin extends EeschemaComponentObject
 			$this->Type,
 			$this->attrs) = sscanf($line, "%s %s %d %d %d %s %d %d %d %d %s %s");
 
+		$this->Name = filter_var($this->Name, FILTER_SANITIZE_STRING);
+		$this->Number = filter_var($this->Number, FILTER_SANITIZE_STRING);
 			
 		for($i = 0; $i < strlen($this->attrs); $i++ )
 		{

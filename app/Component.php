@@ -2,9 +2,8 @@
 
 use Illuminate\Database\Eloquent\Model;
 
-class Component extends Model {
-
-	
+class Component extends Model 
+{
     public function library()
     {
         return $this->belongsTo('App\Library');
@@ -14,5 +13,9 @@ class Component extends Model {
 	{
 		return $this->library->package();
 	}
-
+	
+    public function aliases()
+    {
+        return $this->hasMany('App\ComponentAlias');
+    }
 }

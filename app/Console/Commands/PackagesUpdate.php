@@ -11,6 +11,7 @@ use App\Package;
 use App\Kicad\EeschemaLibraryReader;
 use App\Component;
 use App\Library;
+use App\ComponentAlias;
 
 class PackagesUpdate extends Command {
 
@@ -78,15 +79,15 @@ class PackagesUpdate extends Command {
 			if( $file->getExtension() == "lib" )
 			{
 				$lib = new EeschemaLibraryReader();
-				try
-				{
+				//try
+				//{
 					$lib->read( $file );
-				}
-				catch(Exception $e)
-				{
-					echo "File extension matched lib but not eeschema lib " . (string)$file."\n";
-					continue;
-				}
+				//}
+				//catch(Exception $e)
+				//{
+				//	echo "File extension matched lib but not eeschema lib " . (string)$file."\n";
+				//	continue;
+				//}
 				
 				echo "Parsed " . (string)$file . "\n";
 				$library = $package->libraries()->where('name', $lib->name)->first();
@@ -117,15 +118,22 @@ class PackagesUpdate extends Command {
 							$component->raw = $comp->raw;
 							$component->save();
 							
+							foreach($comp->alias as $a)
+							{
+								$alias = new ComponentAlias;
+								$alias->component_id = $component->id;
+								$alias->alias = $a;
+								$alias->save();
+							}
 							
 							try
 							{
 								$svg = $comp->draw();
+								$path = 'libraries/'.$library->id.'/'.$component->id.'.svg';
+								Storage::disk('images')->put($path, $svg);
 							}
 							catch(\SVGCreator\SVGException $e)
 							{
-								$path = 'libraries/'.$library->id.'/'.$component->id.'.svg';
-								Storage::disk('images')->put($path, $svg);
 								echo "Error generating image for " . $component->name . "\n";
 							}
 						}
