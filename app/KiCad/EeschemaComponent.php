@@ -74,13 +74,14 @@ class EeschemaComponent {
 					->attr('width', $width)
 					->attr('height', $height)
 					->attr('fill', '#ffffff')
-					->attr('stroke-width', $draw->Width/4)
+					->attr('stroke-width', $draw->Width)
 					->attr('stroke', '#000000')
 					->attr('x', $this->transX($draw->PositionX))
 					->attr('y', $this->transY($draw->PositionY));
 			}
 			else if( $draw->ShapeType == ShapeType::PIN )
 			{
+				if( $draw->Unit == 0 || $draw->Unit == 1 )
 				$draw->draw($svg, $this);
 			}
 		}
@@ -286,6 +287,8 @@ class EeschemaComponentPin extends EeschemaComponentObject
 	public $Type = '';
 	private $attrs = '';
 	
+	private $font = 'Monaco, monospace';
+	
 	public $Attributes = array( 'invisible' => false,
 								'shape' => array() 
 								);
@@ -327,7 +330,8 @@ class EeschemaComponentPin extends EeschemaComponentObject
 	public function draw( &$svg, &$component )
 	{
 		if( $this->Attributes['invisible'] )
-			return;
+		{
+		}
 		
 		$this->drawPinSymbol($svg, $component);
 		$this->drawPinText($svg, $component);
@@ -343,11 +347,11 @@ class EeschemaComponentPin extends EeschemaComponentObject
 		switch( $this->Orientation )
 		{
 			case 'U':
-				$y1 -= $this->Length;
+				$y1 += $this->Length;
 				$mapY1 = 1;
 				break;
 			case 'D':
-				$y1 += $this->Length;
+				$y1 -= $this->Length;
 				$mapY1 = -1;
 				break;
 			case 'L':
@@ -422,10 +426,10 @@ class EeschemaComponentPin extends EeschemaComponentObject
 		switch( $this->Orientation )
 		{
 			case 'U':
-				$y1 -= $this->Length;
+				$y1 += $this->Length;
 				break;
 			case 'D':
-				$y1 += $this->Length;
+				$y1 -= $this->Length;
 				break;
 			case 'L':
 				$x1 -= $this->Length;
@@ -453,11 +457,11 @@ class EeschemaComponentPin extends EeschemaComponentObject
 				}
 				else if( $this->Orientation == 'D' )
 				{
-					$nY = $y1 + $component->pinNameOffset;
+					$nY = $y1 - $component->pinNameOffset;
 				}
 				else if( $this->Orientation == 'U' )
 				{
-					$nY = $y1 - $component->pinNameOffset;
+					$nY = $y1 + $component->pinNameOffset;
 				}
 				
 				$text = $svg->append(\SVGCreator\Element::TEXT)
@@ -465,6 +469,7 @@ class EeschemaComponentPin extends EeschemaComponentObject
 					->attr('y', $component->transY($nY))
 					->attr('fill', '#000000')
 					->attr('font-size', $this->NameTextSize)
+					->attr('font-family', $this->font)
 					->attr('text-anchor', $anchor)
 					->attr('alignment-baseline', 'middle');
 					
@@ -487,7 +492,7 @@ class EeschemaComponentPin extends EeschemaComponentObject
 					$this->Orientation == 'L' )
 				{
 					$nuX = ($x1 + $x)/2;
-					$nuY = $y1 - EeschemaComponent::TXTMARGE;
+					$nuY = $y1 + EeschemaComponent::TXTMARGE;
 				}
 				else if( $this->Orientation == 'D' ||
 							$this->Orientation == 'U' )
@@ -496,11 +501,14 @@ class EeschemaComponentPin extends EeschemaComponentObject
 					$nuY = ($y1 + $y)/2;
 				}
 				
-				$svg->append(\SVGCreator\Element::TEXT)
+				$text = $svg->append(\SVGCreator\Element::TEXT)
 					->attr('x', $component->transX($nuX))
 					->attr('y', $component->transY($nuY))
 					->attr('fill', '#000000')
 					->attr('font-size', $this->NumberTextSize)
+					->attr('font-family', $this->font)
+					->attr('text-anchor', 'end')
+					->attr('alignment-baseline', 'bottom')
 					->text($this->Number);
 			}
 		}	
