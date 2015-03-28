@@ -19,6 +19,14 @@
 				<th>Name</th>
 				<th>Type</th>
 			</thead>
+			<tbody>
+			@foreach( $package->libraries as $library )
+				<tr>
+					<td><a href="{{ action('LibraryController@overview', array($library->id)) }}">{{ $library->name }}</a></td>
+					<td>eeschema</td>
+				</tr>
+			@endforeach
+			</tbody>
 		</table>
 	</div>
 </div>

@@ -5,7 +5,16 @@
 <div class="container">
 	<div class="row">
 		<div class="page-header">
-			<h1>{{ $component->name }}</h1>
+			<h1>{{ $component->name }}
+				<small> 
+					<a href="{{ action('PackageController@overview', array($component->library->package->id)) }}">
+						{{ $component->library->package->name }}
+					</a> / 
+					<a href="{{ action('LibraryController@overview', array($component->library->id)) }}">
+						{{ $component->library->name }}
+					</a>
+				</small>
+			</h1>
 		</div>
 	</div>
 	<div class="row">
