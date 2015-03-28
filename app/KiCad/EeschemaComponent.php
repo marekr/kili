@@ -30,12 +30,12 @@ class EeschemaComponent {
 	
 	public function transX($x)
 	{
-		return $x + $this->minWidth;
+		return $x + $this->minWidth/2;
 	}
 	
 	public function transY($y)
 	{
-		return $this->minHeight - $y;
+		return $this->minHeight/2 - $y;
 	}
 	
 	public function determineTransBB()
@@ -54,13 +54,16 @@ class EeschemaComponent {
 	
 	public function draw()
 	{
+		$this->determineTransBB();
+		
 		$attributesSvg = array(
 							'width' => '100%',
-							'height' => '100%'
+							'height' => '100%',
+							'xmlns' => 'http://www.w3.org/2000/svg',
+							'viewBox' => '0 0 ' . $this->minWidth . ' ' . $this->minHeight
 						  );
 		$svg = new \SVGCreator\Elements\Svg($attributesSvg);
 		
-		$this->determineTransBB();
 		foreach($this->drawItems as $draw)
 		{
 			if( $draw->ShapeType == ShapeType::SQUARE )

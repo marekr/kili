@@ -6,6 +6,7 @@ use Symfony\Component\Console\Input\InputArgument;
 use PHPGit\Git;
 use File;
 use Exception;
+use Storage;
 use App\Package;
 use App\Kicad\EeschemaLibraryReader;
 use App\Component;
@@ -77,7 +78,15 @@ class PackagesUpdate extends Command {
 			if( $file->getExtension() == "lib" )
 			{
 				$lib = new EeschemaLibraryReader();
-				$lib->read( $file );
+				try
+				{
+					$lib->read( $file );
+				}
+				catch(Exception $e)
+				{
+					echo "File extension matched lib but not eeschema lib " . (string)$file."\n";
+					continue;
+				}
 				
 				echo "Parsed " . (string)$file . "\n";
 				$library = $package->libraries()->where('name', $lib->name)->first();
@@ -107,6 +116,18 @@ class PackagesUpdate extends Command {
 							$component->pin_name_offset = $comp->pinNameOffset;
 							$component->raw = $comp->raw;
 							$component->save();
+							
+							
+							try
+							{
+								$svg = $comp->draw();
+							}
+							catch(\SVGCreator\SVGException $e)
+							{
+								$path = 'libraries/'.$library->id.'/'.$component->id.'.svg';
+								Storage::disk('images')->put($path, $svg);
+								echo "Error generating image for " . $component->name . "\n";
+							}
 						}
 					}
 				}
