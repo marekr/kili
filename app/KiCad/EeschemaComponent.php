@@ -85,7 +85,7 @@ class EeschemaComponent {
 				$draw->draw($svg, $this);
 			}
 		}
-		echo $svg->getString();	
+		return $svg->getString();	
 		/*
 		$palette = new RGB();
 

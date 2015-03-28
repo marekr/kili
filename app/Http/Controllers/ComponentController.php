@@ -53,7 +53,7 @@ class ComponentController extends Controller {
 		$comp->parseRaw( explode("\n",$raw) );
 		
 		$image = $comp->draw();
-		//$image->show('png');
+		echo $image;
 		die();
     }
 }
