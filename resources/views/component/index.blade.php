@@ -7,7 +7,24 @@
 		<div class="page-header">
 			<h1>{{ $component->name }}</h1>
 		</div>
-		<object style="width:400px" data="{{ asset('images/libraries/'.$component->library->id.'/'.$component->id) }}.svg" type="image/svg+xml"></object>
+	</div>
+	<div class="row">
+		<div class="panel panel-default">
+			<div class="panel-heading">Aliases</div>
+			<div class="panel-body">
+			<ul>
+			@foreach( $component->aliases as $alias )
+				<li>{{ $alias->alias }}</li>
+			@endforeach
+			</ul>
+			</div>
+		</div>
+		<div class="panel panel-default">
+			<div class="panel-heading">Symbol</div>
+			<div class="panel-body">
+				<object style="width:400px" data="{{ asset('images/libraries/'.$component->library->id.'/'.$component->id) }}.svg" type="image/svg+xml"></object>
+			</div>
+		</div>
 	</div>
 </div>
 @endsection
