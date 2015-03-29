@@ -13,4 +13,9 @@ class Library extends Model {
     {
         return $this->hasMany('App\Component');
     }
+
+    public function events()
+    {
+        return $this->hasMany('App\LibraryEvents');
+    }
 }

@@ -8,4 +8,9 @@ class Package extends Model {
     {
         return $this->hasMany('App\Library');
     }
+
+    public function events()
+    {
+        return $this->hasMany('App\PackageEvent');
+    }
 }
