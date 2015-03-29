@@ -3,10 +3,6 @@
 use File;
 use Exception;
 use SplFileInfo;
-use Imagine\Gd\Imagine;
-use Imagine\Image\Palette\RGB;
-use Imagine\Image\Box;
-use Imagine\Image\Point;
 
 use SVGCreator\Element;
 use SVGCreator\Elements\Svg;
@@ -102,27 +98,11 @@ class EeschemaComponent {
 			}
 		}
 		return $svg->getString();
-		/*
-		$palette = new RGB();
+	}
 
-		$imagine = new Imagine();
-		$box = new Box(800, 600);
-		$color = $palette->color('#000');
-		$image = $imagine->create($box, $color);
-
-		$x = 200;
-		foreach($this->drawItems as $draw)
-		{
-			$coords = array( new Point($x + $draw->PositionX, $x + $draw->EndY),
-							new Point($x + $draw->PositionX, $x + $draw->PositionY),
-							new Point($x + $draw->EndX, $x + $draw->PositionY),
-							new Point($x + $draw->EndX, $x + $draw->EndY)
-							);
-
-			$image->draw()->polygon( $coords, $image->palette()->color('fff') );
-		}*/
-
-	//	return $image;
+	public function getHash()
+	{
+		return hash('sha1', $this->raw);
 	}
 
 	public function parseRaw( array $raw )
@@ -239,6 +219,9 @@ class EeschemaComponent {
 			{
 				case 'A':
 					//arc
+					$obj = new EeschemaComponentArc();
+					$obj->parse($raw[$i]);
+					$this->drawItems[] = $obj;
 					break;
 				case 'C':
 					//circle
@@ -275,9 +258,10 @@ class EeschemaComponent {
 
 class ShapeType
 {
-  const NONE = 0;
-  const SQUARE = 1;
-  const PIN = 2;
+	const NONE = 0;
+	const SQUARE = 1;
+	const PIN = 2;
+	const ARC = 3;
 }
 
 class EeschemaComponentObject

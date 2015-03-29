@@ -46,29 +46,50 @@ class PackagesUpdate extends Command {
 	 */
 	public function fire()
 	{
-		$packages = Package::all();
+		$packID = (int)$this->option('package');
 
-		$base = 'C:\xampp\htdocs\kili\tmp\git';
-		foreach( $packages as $package )
+		if( $packID != 0 )
 		{
-			$path = $base.'\\'.$package->id;
-			$git = new Git();
-			if( file_exists($path) === false )
+			$package = Package::find($packID);
+			if( $package == null )
 			{
-				echo "Cloning";
-				$git->clone($package->repository_url, $path);
+				$this->error('Invalid package id!');
+				return;
 			}
-			$git->setRepository($path);
-			//$git->pull();
-			$this->parseLibraries($package, $path);
-
-			//foreach ($git->tree('master') as $object) {
-			//	echo $git->show($object['file']);
-				//print_r($object);
-			//}
-
-			unset($git);
+			$this->updatePackage($package);
 		}
+		else
+		{
+			$packages = Package::all();
+
+			foreach( $packages as $package )
+			{
+				$this->updatePackage($package);
+			}
+		}
+	}
+
+	private function updatePackage(Package $package)
+	{
+		$base = 'C:\xampp\htdocs\kili\tmp\git';
+
+		$path = $base.'\\'.$package->id;
+		$git = new Git();
+		if( file_exists($path) === false )
+		{
+			echo "Cloning";
+			$git->clone($package->repository_url, $path);
+		}
+		$git->setRepository($path);
+		//$git->pull();
+		$this->parseLibraries($package, $path);
+
+		//foreach ($git->tree('master') as $object) {
+		//	echo $git->show($object['file']);
+			//print_r($object);
+		//}
+
+		unset($git);
 	}
 
 	private function parseLibraries(Package $package, $path)
@@ -79,15 +100,15 @@ class PackagesUpdate extends Command {
 			if( $file->getExtension() == "lib" )
 			{
 				$lib = new EeschemaLibraryReader();
-				//try
-				//{
+				try
+				{
 					$lib->read( $file );
-				//}
-				//catch(Exception $e)
-				//{
-				//	echo "File extension matched lib but not eeschema lib " . (string)$file."\n";
-				//	continue;
-				//}
+				}
+				catch(Exception $e)
+				{
+					echo "File extension matched lib but not eeschema lib " . (string)$file."\n";
+					continue;
+				}
 
 				echo "Parsed " . (string)$file . "\n";
 				$library = $package->libraries()->where('name', $lib->name)->first();
@@ -104,10 +125,16 @@ class PackagesUpdate extends Command {
 				{
 					foreach($lib->components as $comp)
 					{
+						$new = false;
 						$component = $library->components->where('name', $comp->name)->first();
 						if( $component == null )
 						{
 							$component = new Component;
+							$new = true;
+						}
+
+						if( $component->hash != $comp->getHash() )
+						{
 							$component->name = $comp->name;
 							$component->prefix = $comp->prefix;
 							$component->library_id = $library->id;
@@ -119,6 +146,7 @@ class PackagesUpdate extends Command {
 							$component->description = $comp->description;
 							$component->keywords = $comp->keywords;
 							$component->doc_filename = $comp->docFilename;
+							$component->hash = $comp->getHash();
 							$component->save();
 
 							foreach($comp->alias as $a)
@@ -140,8 +168,17 @@ class PackagesUpdate extends Command {
 								echo "Error generating image for " . $component->name . "\n";
 							}
 						}
+
+						if( $new )
+						{
+							$event = new ComponentEvent;
+							$event->type = 'change';
+							$event->component_id = $component->id;
+							$event->save();
+						}
 					}
 				}
+				die();
 			}
 		}
 	}
@@ -165,6 +202,7 @@ class PackagesUpdate extends Command {
 	protected function getOptions()
 	{
 		return [
+			['package', null, InputOption::VALUE_REQUIRED, 'Package ID', 0],
 		];
 	}
 
