@@ -47,7 +47,7 @@ class PackagesUpdate extends Command {
 	public function fire()
 	{
 		$packages = Package::all();
-		
+
 		$base = 'C:\xampp\htdocs\kili\tmp\git';
 		foreach( $packages as $package )
 		{
@@ -61,16 +61,16 @@ class PackagesUpdate extends Command {
 			$git->setRepository($path);
 			//$git->pull();
 			$this->parseLibraries($package, $path);
-			
+
 			//foreach ($git->tree('master') as $object) {
 			//	echo $git->show($object['file']);
 				//print_r($object);
 			//}
-			
+
 			unset($git);
 		}
 	}
-	
+
 	private function parseLibraries(Package $package, $path)
 	{
 		$files = File::allFiles($path);
@@ -88,10 +88,10 @@ class PackagesUpdate extends Command {
 				//	echo "File extension matched lib but not eeschema lib " . (string)$file."\n";
 				//	continue;
 				//}
-				
+
 				echo "Parsed " . (string)$file . "\n";
 				$library = $package->libraries()->where('name', $lib->name)->first();
-				
+
 				if( $library == null )
 				{
 					$library = new Library;
@@ -99,7 +99,7 @@ class PackagesUpdate extends Command {
 					$library->name = $lib->name;
 					$library->save();
 				}
-				
+
 				if( count($lib->components) > 0 )
 				{
 					foreach($lib->components as $comp)
@@ -116,8 +116,11 @@ class PackagesUpdate extends Command {
 							$component->draw_names = $comp->drawName;
 							$component->pin_name_offset = $comp->pinNameOffset;
 							$component->raw = $comp->raw;
+							$component->description = $comp->description;
+							$component->keywords = $comp->keywords;
+							$component->doc_filename = $comp->docFilename;
 							$component->save();
-							
+
 							foreach($comp->alias as $a)
 							{
 								$alias = new ComponentAlias;
@@ -125,7 +128,7 @@ class PackagesUpdate extends Command {
 								$alias->alias = $a;
 								$alias->save();
 							}
-							
+
 							try
 							{
 								$svg = $comp->draw();
