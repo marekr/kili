@@ -4,6 +4,12 @@ use Illuminate\Console\Command;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Input\InputArgument;
 
+use App\Package;
+use App\Component;
+use App\Library;
+use App\ComponentAlias;
+use App\ComponentEvent;
+
 class DebugReset extends Command {
 
 	/**
@@ -37,7 +43,10 @@ class DebugReset extends Command {
 	 */
 	public function fire()
 	{
-		//
+		Library::truncate();
+		Component::truncate();
+		ComponentEvent::truncate();
+		ComponentAlias::truncate();
 	}
 
 	/**
@@ -48,7 +57,6 @@ class DebugReset extends Command {
 	protected function getArguments()
 	{
 		return [
-			['example', InputArgument::REQUIRED, 'An example argument.'],
 		];
 	}
 
@@ -60,7 +68,6 @@ class DebugReset extends Command {
 	protected function getOptions()
 	{
 		return [
-			['example', null, InputOption::VALUE_OPTIONAL, 'An example option.', null],
 		];
 	}
 

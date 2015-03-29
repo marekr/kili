@@ -14,6 +14,7 @@ class Kernel extends ConsoleKernel {
 		'App\Console\Commands\Inspire',
 		'App\Console\Commands\PackagesUpdate',
 		'App\Console\Commands\ComponentsRegenerate',
+		'App\Console\Commands\DebugReset',
 	];
 
 	/**
