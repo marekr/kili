@@ -98,7 +98,7 @@ class PackagesUpdate extends Command {
 			$this->parseLibraries($package, $path, new Carbon($entry['date']), $entry['hash']);
 			if( $i == $size-5 )
 			{
-				die();
+		//		die();
 			}
 			$this->info('Parsing at hash:' . $entry['hash'] .' complete');
 		}
@@ -156,12 +156,12 @@ class PackagesUpdate extends Command {
 					}
 				}
 
-				$this->handleLibraryComponents($lib, $library);
+				$this->handleLibraryComponents($lib, $library, $libDate, $version);
 			}
 		}
 	}
 
-	private function handleLibraryComponents(EeschemaLibraryReader &$lib, Library &$library)
+	private function handleLibraryComponents(EeschemaLibraryReader &$lib, Library &$library, Carbon $libDate, $version)
 	{
 		if( count($lib->components) > 0 )
 		{
@@ -210,19 +210,13 @@ class PackagesUpdate extends Command {
 						echo "Error generating image for " . $component->name . "\n";
 					}
 
-					if( !$new )
+					if( $new )
 					{
-						$event = new ComponentEvent;
-						$event->type = 'change';
-						$event->component_id = $component->id;
-						$event->save();
+						ComponentEvent::addCreated($component->id, $libDate);
 					}
 					else
 					{
-						$event = new ComponentEvent;
-						$event->type = 'created';
-						$event->component_id = $component->id;
-						$event->save();
+						ComponentEvent::addEdited($component->id, $libDate);
 					}
 				}
 			}

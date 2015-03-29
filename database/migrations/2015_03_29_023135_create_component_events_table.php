@@ -17,7 +17,7 @@ class CreateComponentEventsTable extends Migration {
 			$table->increments('id');
 			$table->integer('component_id')->unsigned();
 			$table->string('type');
-			$table->timestamp('created_at');
+			$table->timestamp('date_occurred');
 		});
 	}
 
