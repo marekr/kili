@@ -12,6 +12,7 @@ use App\Kicad\EeschemaLibraryReader;
 use App\Component;
 use App\Library;
 use App\ComponentAlias;
+use App\ComponentEvent;
 
 class PackagesUpdate extends Command {
 
