@@ -17,7 +17,7 @@ class CreateLibraryEventsTable extends Migration {
 			$table->increments('id');
 			$table->integer('library_id')->unsigned();
 			$table->string('type');
-			$table->timestamp('created_at');
+			$table->timestamp('date_occurred');
 		});
 	}
 

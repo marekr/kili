@@ -7,6 +7,7 @@ use Symfony\Component\Console\Input\InputArgument;
 use App\Package;
 use App\Component;
 use App\Library;
+use App\LibraryEvent;
 use App\ComponentAlias;
 use App\ComponentEvent;
 
@@ -44,6 +45,7 @@ class DebugReset extends Command {
 	public function fire()
 	{
 		Library::truncate();
+		LibraryEvent::truncate();
 		Component::truncate();
 		ComponentEvent::truncate();
 		ComponentAlias::truncate();

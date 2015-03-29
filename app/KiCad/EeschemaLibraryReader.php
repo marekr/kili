@@ -8,12 +8,23 @@ class EeschemaLibraryReader {
 
 	public $name = '';
 	public $components = array();
+	private $file = '';
 
-	public function read( $file )
+	function __construct( $file )
 	{
-		$data = File::get( $file );
+		$this->file = $file;
+	}
 
-		$spl = new SplFileInfo($file);
+	public function getHash()
+	{
+		return hash_file('sha1', $this->file);
+	}
+
+	public function read()
+	{
+		$data = File::get( $this->file );
+
+		$spl = new SplFileInfo($this->file);
 		$this->name = $spl->getBasename('.'.$spl->getExtension());
 
 		$data = explode( "\n", $data );
