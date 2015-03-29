@@ -6,10 +6,10 @@
 	<div class="row">
 		<div class="page-header">
 			<h1>{{ $component->name }}
-				<small> 
+				<small>
 					<a href="{{ action('PackageController@overview', array($component->library->package->id)) }}">
 						{{ $component->library->package->name }}
-					</a> / 
+					</a> /
 					<a href="{{ action('LibraryController@overview', array($component->library->id)) }}">
 						{{ $component->library->name }}
 					</a>
@@ -18,18 +18,32 @@
 		</div>
 	</div>
 	<div class="row">
-		<div class="panel panel-default">
-			<div class="panel-heading">Aliases</div>
-			<div class="panel-body">
-			<ul>
-			@foreach( $component->aliases as $alias )
-				<li>{{ $alias->alias }}</li>
-			@endforeach
-			</ul>
+		<div class="col-md-6">
+			@if(!empty($component->doc_filename))
+			<p>
+				<a href="{{ $component->doc_filename }}">Documentation</a>
+			</p>
+			@endif
+			<p>
+				{{ $component->description }}
+			</p>
+		</div>
+		<div class="col-md-6">
+			<div class="panel panel-default">
+				<div class="panel-heading">Aliases</div>
+				<div class="panel-body">
+				<ul>
+				@foreach( $component->aliases as $alias )
+					<li>{{ $alias->alias }}</li>
+				@endforeach
+				</ul>
+				</div>
 			</div>
 		</div>
+	</div>
+	<div class="row">
 		<div class="panel panel-default">
-			<div class="panel-heading">Symbol</div>
+			<div class="panel-heading">Symbol Preview</div>
 			<div class="panel-body">
 				<object style="width:400px" data="{{ asset('images/libraries/'.$component->library->id.'/'.$component->id) }}.svg" type="image/svg+xml"></object>
 			</div>
