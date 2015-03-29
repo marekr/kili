@@ -45,7 +45,7 @@
 		<div class="panel panel-default">
 			<div class="panel-heading">Symbol Preview</div>
 			<div class="panel-body">
-				<object style="width:400px" data="{{ asset('images/libraries/'.$component->library->id.'/'.$component->id) }}.svg" type="image/svg+xml"></object>
+				<object style="width:100%" data="{{ asset('images/libraries/'.$component->library->id.'/'.$component->id) }}.svg" type="image/svg+xml"></object>
 			</div>
 		</div>
 	</div>

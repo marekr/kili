@@ -49,8 +49,16 @@ class EeschemaComponent {
 		$minY = 0;
 		foreach($this->drawItems as $draw)
 		{
-			$minX = max($minX, abs($draw->PositionX));
-			$minY = max($minY, abs($draw->PositionY));
+			if( $draw->ShapeType == ShapeType::SQUARE )
+			{
+				$minX = max($minX, abs($draw->Width()));
+				$minY = max($minY, abs($draw->Height()));
+			}
+			else
+			{
+				$minX = max($minX, abs($draw->PositionX));
+				$minY = max($minY, abs($draw->PositionY));
+			}
 		}
 
 		$this->minWidth = $minX *2;
@@ -294,6 +302,16 @@ class EeschemaComponentSquare extends EeschemaComponentObject
 	{
 		$line = substr($line, 2);
 		list($this->PositionX, $this->PositionY, $this->EndX, $this->EndY, $this->Unit, $this->Convert, $this->Width, $this->Type) = sscanf($line, "%d %d %d %d %d %d %d %255s");
+	}
+
+	public function width()
+	{
+		return abs($this->PositionX) + abs($this->EndX);
+	}
+
+	public function height()
+	{
+		return abs($this->PositionY) + abs($this->EndY);
 	}
 }
 
