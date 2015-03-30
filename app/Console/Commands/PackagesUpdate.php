@@ -12,9 +12,7 @@ use App\PackageEvent;
 use App\Kicad\EeschemaLibraryReader;
 use App\Component;
 use App\Library;
-use App\LibraryEvent;
 use App\ComponentAlias;
-use App\ComponentEvent;
 use Carbon\Carbon;
 
 class PackagesUpdate extends Command {
@@ -88,8 +86,22 @@ class PackagesUpdate extends Command {
 		//$git->pull();
 
 		$git->checkout('origin');
-		$log = $git->log('', null, array('limit'=> 9000));
+
+		$range = '';
+		if( !empty($package->repository_bookmark) )
+		{
+			$range = $package->repository_bookmark.'..HEAD';
+		}
+
+		$log = $git->log($range, null, array('limit'=> 9000));
 		$size = count($log);
+		$entry = array();
+
+		if( $size == 0 )
+		{
+			$this->info("No new revisions");
+		}
+
 		for($i = $size-1; $i >= 0; $i--)
 		{
 			$entry = $log[$i];
@@ -101,12 +113,10 @@ class PackagesUpdate extends Command {
 		//		die();
 			}
 			$this->info('Parsing at hash:' . $entry['hash'] .' complete');
-		}
 
-		//foreach ($git->tree('master') as $object) {
-		//	echo $git->show($object['file']);
-			//print_r($object);
-		//}
+			$package->repository_bookmark = $entry['hash'];
+			$package->save();
+		}
 
 		unset($git);
 	}
@@ -148,11 +158,11 @@ class PackagesUpdate extends Command {
 
 					if( $new )
 					{
-						LibraryEvent::addCreated($library->id, $libDate);
+						PackageEvent::addLibraryCreate($library, $libDate);
 					}
 					else
 					{
-						LibraryEvent::addEdited($library->id, $libDate);
+						PackageEvent::addLibraryEdit($library, $libDate);
 					}
 				}
 
@@ -163,62 +173,83 @@ class PackagesUpdate extends Command {
 
 	private function handleLibraryComponents(EeschemaLibraryReader &$lib, Library &$library, Carbon $libDate, $version)
 	{
-		if( count($lib->components) > 0 )
+		$dbComponents = $library->components;
+
+		foreach($lib->components as $comp)
 		{
+			$new = false;
+			$component = $library->components->where('name', $comp->name)->first();
+			if( $component == null )
+			{
+				$component = new Component;
+				$new = true;
+			}
+
+			if( $component->hash != $comp->getHash() )
+			{
+				$component->name = $comp->name;
+				$component->prefix = $comp->prefix;
+				$component->library_id = $library->id;
+				$component->unit_count = $comp->unitCount;
+				$component->draw_numbers = $comp->drawNum;
+				$component->draw_names = $comp->drawName;
+				$component->pin_name_offset = $comp->pinNameOffset;
+				$component->raw = $comp->raw;
+				$component->description = $comp->description;
+				$component->keywords = $comp->keywords;
+				$component->doc_filename = $comp->docFilename;
+				$component->hash = $comp->getHash();
+				$component->save();
+
+				$component->aliases()->delete();
+				foreach($comp->alias as $a)
+				{
+					$alias = new ComponentAlias;
+					$alias->component_id = $component->id;
+					$alias->alias = $a;
+					$alias->save();
+				}
+/*
+				try
+				{
+					$svg = $comp->draw();
+					$path = 'libraries/'.$library->id.'/'.$component->id.'.svg';
+					Storage::disk('images')->put($path, $svg);
+				}
+				catch(\SVGCreator\SVGException $e)
+				{
+					echo "Error generating image for " . $component->name . "\n";
+				}
+*/
+				if( $new )
+				{
+					PackageEvent::addComponentCreate($component, $libDate);
+				}
+				else
+				{
+					PackageEvent::addComponentEdit($component, $libDate);
+				}
+			}
+		}
+
+		foreach($dbComponents as $dbComp)
+		{
+			$found = false;
 			foreach($lib->components as $comp)
 			{
-				$new = false;
-				$component = $library->components->where('name', $comp->name)->first();
-				if( $component == null )
+				if( $comp->name == $dbComp->name )
 				{
-					$component = new Component;
-					$new = true;
+					$found = true;
+					break;
 				}
+			}
 
-				if( $component->hash != $comp->getHash() )
-				{
-					$component->name = $comp->name;
-					$component->prefix = $comp->prefix;
-					$component->library_id = $library->id;
-					$component->unit_count = $comp->unitCount;
-					$component->draw_numbers = $comp->drawNum;
-					$component->draw_names = $comp->drawName;
-					$component->pin_name_offset = $comp->pinNameOffset;
-					$component->raw = $comp->raw;
-					$component->description = $comp->description;
-					$component->keywords = $comp->keywords;
-					$component->doc_filename = $comp->docFilename;
-					$component->hash = $comp->getHash();
-					$component->save();
+			if( !$found )
+			{
+				$dbComp->aliases()->delete();
+				$dbComp->delete();
 
-					foreach($comp->alias as $a)
-					{
-						$alias = new ComponentAlias;
-						$alias->component_id = $component->id;
-						$alias->alias = $a;
-						$alias->save();
-					}
-
-					try
-					{
-						$svg = $comp->draw();
-						$path = 'libraries/'.$library->id.'/'.$component->id.'.svg';
-						Storage::disk('images')->put($path, $svg);
-					}
-					catch(\SVGCreator\SVGException $e)
-					{
-						echo "Error generating image for " . $component->name . "\n";
-					}
-
-					if( $new )
-					{
-						ComponentEvent::addCreated($component->id, $libDate);
-					}
-					else
-					{
-						ComponentEvent::addEdited($component->id, $libDate);
-					}
-				}
+				PackageEvent::addComponentDelete($component, $libDate);
 			}
 		}
 	}

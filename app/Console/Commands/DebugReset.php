@@ -5,11 +5,10 @@ use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Input\InputArgument;
 
 use App\Package;
+use App\PackageEvent;
 use App\Component;
 use App\Library;
-use App\LibraryEvent;
 use App\ComponentAlias;
-use App\ComponentEvent;
 
 class DebugReset extends Command {
 
@@ -44,10 +43,11 @@ class DebugReset extends Command {
 	 */
 	public function fire()
 	{
+		Package::where('repository_bookmark', '!=', '')->update(['repository_bookmark' => '']);
+
+		PackageEvent::truncate();
 		Library::truncate();
-		LibraryEvent::truncate();
 		Component::truncate();
-		ComponentEvent::truncate();
 		ComponentAlias::truncate();
 	}
 

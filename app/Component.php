@@ -1,9 +1,13 @@
 <?php namespace App;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
+
 
 class Component extends Model {
-    
+
+    use SoftDeletes;
+
     public function library()
     {
         return $this->belongsTo('App\Library');
@@ -21,6 +25,6 @@ class Component extends Model {
 
     public function events()
     {
-        return $this->hasMany('App\ComponentEvent');
+        return $this->hasMany('App\PackageEvent');
     }
 }
