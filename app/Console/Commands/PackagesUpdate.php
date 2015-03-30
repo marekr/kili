@@ -77,6 +77,7 @@ class PackagesUpdate extends Command {
 
 		$path = $base.'\\'.$package->id;
 		$git = new Git();
+		$git->setTimeout(600);
 		if( file_exists($path) === false )
 		{
 			echo "Cloning";
@@ -108,10 +109,10 @@ class PackagesUpdate extends Command {
 			$this->info('Checkout out hash:' . $entry['hash']);
 			$git->checkout($entry['hash']);
 			$this->parseLibraries($package, $path, new Carbon($entry['date']), $entry['hash']);
-			if( $i == $size-5 )
-			{
+	//		if( $i == $size-5 )
+	//		{
 		//		die();
-			}
+	//		}
 			$this->info('Parsing at hash:' . $entry['hash'] .' complete');
 
 			$package->repository_bookmark = $entry['hash'];
@@ -189,7 +190,6 @@ class PackagesUpdate extends Command {
 			if( !$found )
 			{
 				PackageEvent::addLibraryDelete($dbLibrary, $libDate);
-				$dbLibrary->events()->delete();
 				$dbLibrary->delete();
 			}
 		}
