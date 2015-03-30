@@ -32,6 +32,7 @@ class PackageEvent extends Model {
     {
         $event = self::eventSetup($library->package, $date);
         $event->library_id = $library->id;
+        $event->library_name = $library->name;
 
         $event->type = self::TypeLibraryCreate;
         $event->save();
@@ -43,6 +44,7 @@ class PackageEvent extends Model {
     {
         $event = self::eventSetup($library->package, $date);
         $event->library_id = $library->id;
+        $event->library_name = $library->name;
 
         $event->type = self::TypeLibraryEdit;
         $event->save();
@@ -54,6 +56,7 @@ class PackageEvent extends Model {
     {
         $event = self::eventSetup($library->package, $date);
         $event->library_id = $library->id;
+        $event->library_name = $library->name;
 
         $event->type = self::TypeLibraryDelete;
         $event->save();
@@ -65,7 +68,9 @@ class PackageEvent extends Model {
     {
         $event = self::eventSetup($component->library->package, $date);
         $event->component_id = $component->id;
+        $event->component_name = $component->name;
         $event->library_id = $component->library->id;
+        $event->library_name = $component->library->name;
 
         $event->type = self::TypeComponentCreate;
         $event->save();
@@ -77,7 +82,9 @@ class PackageEvent extends Model {
     {
         $event = self::eventSetup($component->library->package, $date);
         $event->component_id = $component->id;
+        $event->component_name = $component->name;
         $event->library_id = $component->library->id;
+        $event->library_name = $component->library->name;
 
         $event->type = self::TypeComponentEdit;
         $event->save();
@@ -89,7 +96,9 @@ class PackageEvent extends Model {
     {
         $event = self::eventSetup($component->library->package, $date);
         $event->component_id = $component->id;
+        $event->component_name = $component->name;
         $event->library_id = $component->library->id;
+        $event->library_name = $component->library->name;
 
         $event->type = self::TypeComponentDelete;
         $event->save();
@@ -103,22 +112,28 @@ class PackageEvent extends Model {
         switch( $this->type )
         {
             case self::TypeComponentCreate:
-                $str = 'Component created';
+                $str = 'Component "%s" in library "%s" created';
+                $str = sprintf($str, $this->component_name, $this->library_name);
                 break;
             case self::TypeComponentEdit:
-                $str = 'Component edited';
+                $str = 'Component "%s" in library "%s" edited';
+                $str = sprintf($str, $this->component_name, $this->library_name);
                 break;
             case self::TypeComponentDelete:
-                $str = 'Component deleted';
+                $str = 'Component "%s" in library "%s" deleted';
+                $str = sprintf($str, $this->component_name, $this->library_name);
                 break;
             case self::TypeLibraryEdit:
-                $str = 'Library edited';
+                $str = 'Library "%s" edited';
+                $str = sprintf($str, $this->library_name);
                 break;
             case self::TypeLibraryCreate:
-                $str = 'Library created';
+                $str = 'Library "%s" created';
+                $str = sprintf($str, $this->library_name);
                 break;
             case self::TypeLibraryDelete:
-                $str = 'Library deleted';
+                $str = 'Library "%s" deleted';
+                $str = sprintf($str, $this->library_name);
                 break;
             default:
                 $str = '';

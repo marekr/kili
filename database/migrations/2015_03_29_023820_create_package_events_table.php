@@ -16,9 +16,11 @@ class CreatePackageEventsTable extends Migration {
 		{
 			$table->increments('id');
 			$table->integer('package_id')->unsigned();
+			$table->string('type');
 			$table->integer('library_id')->unsigned()->nullable();
 			$table->integer('component_id')->unsigned()->nullable();
-			$table->string('type');
+			$table->string('component_name')->nullable();
+			$table->string('library_name')->nullable();
 			$table->string('repository_bookmark');
 			$table->timestamp('date_occurred');
 		});
