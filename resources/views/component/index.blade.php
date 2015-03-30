@@ -42,6 +42,28 @@
 		</div>
 	</div>
 	<div class="row">
+		<table class="table table-striped">
+			<thead>
+				<tr>
+					<th></th>
+					<th>Date</th>
+				</tr>
+			</thead>
+			<tbody>
+				@foreach( $component->events as $event )
+					<tr>
+						<td>
+							{{ $event }}
+						</td>
+						<td>
+							{{ $event->date_occurred }}
+						</td>
+					</tr>
+				@endforeach
+			</tbody>
+		</table>
+	</div>
+	<div class="row">
 		<div class="panel panel-default">
 			<div class="panel-heading">Symbol Preview</div>
 			<div class="panel-body">

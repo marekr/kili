@@ -20,6 +20,6 @@ class Library extends Model {
 
     public function events()
     {
-        return $this->hasMany('App\PackageEvent');
+        return $this->hasMany('App\PackageEvent')->orderBy('date_occurred', 'desc');
     }
 }

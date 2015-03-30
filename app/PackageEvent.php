@@ -96,4 +96,35 @@ class PackageEvent extends Model {
 
         return $event;
     }
+
+    public function __toString()
+    {
+        $str = '';
+        switch( $this->type )
+        {
+            case self::TypeComponentCreate:
+                $str = 'Component created';
+                break;
+            case self::TypeComponentEdit:
+                $str = 'Component edited';
+                break;
+            case self::TypeComponentDelete:
+                $str = 'Component deleted';
+                break;
+            case self::TypeLibraryEdit:
+                $str = 'Library edited';
+                break;
+            case self::TypeLibraryCreate:
+                $str = 'Library created';
+                break;
+            case self::TypeLibraryDelete:
+                $str = 'Library deleted';
+                break;
+            default:
+                $str = '';
+                break;
+        }
+
+        return $str;
+    }
 }

@@ -123,6 +123,7 @@ class PackagesUpdate extends Command {
 
 	private function parseLibraries(Package $package, $path, Carbon $libDate, $version)
 	{
+		$libraries = array();
 		$files = File::allFiles($path);
 		foreach ($files as $file)
 		{
@@ -166,7 +167,29 @@ class PackagesUpdate extends Command {
 					}
 				}
 
+				$libraries[] = $library->name;
+
 				$this->handleLibraryComponents($lib, $library, $libDate, $version);
+			}
+		}
+
+		$dbLibraries = $package->libraries;
+
+		foreach($dbLibraries as $dbLibrary)
+		{
+			$found = false;
+			foreach( $libraries as $lib )
+			{
+				if( $lib == $dbLibrary->name )
+				{
+					$found = true;
+				}
+			}
+
+			if( !$found )
+			{
+				PackageEvent::addLibraryDelete($dbLibrary, $libDate);
+				$dbLibrary->delete();
 			}
 		}
 	}
@@ -249,7 +272,7 @@ class PackagesUpdate extends Command {
 				$dbComp->aliases()->delete();
 				$dbComp->delete();
 
-				PackageEvent::addComponentDelete($component, $libDate);
+				PackageEvent::addComponentDelete($dbComp, $libDate);
 			}
 		}
 	}
