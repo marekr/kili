@@ -107,12 +107,9 @@ class PackagesUpdate extends Command {
 		{
 			$entry = $log[$i];
 			$this->info('Checkout out hash:' . $entry['hash']);
-			$git->checkout($entry['hash']);
+			$git->checkout( $entry['hash'],array('force' => true) );
 			$this->parseLibraries($package, $path, new Carbon($entry['date']), $entry['hash']);
-	//		if( $i == $size-5 )
-	//		{
-		//		die();
-	//		}
+
 			$this->info('Parsing at hash:' . $entry['hash'] .' complete');
 
 			$package->repository_bookmark = $entry['hash'];
