@@ -189,6 +189,7 @@ class PackagesUpdate extends Command {
 			if( !$found )
 			{
 				PackageEvent::addLibraryDelete($dbLibrary, $libDate);
+				$dbLibrary->events()->delete();
 				$dbLibrary->delete();
 			}
 		}
@@ -269,7 +270,6 @@ class PackagesUpdate extends Command {
 
 			if( !$found )
 			{
-				$dbComp->aliases()->delete();
 				$dbComp->delete();
 
 				PackageEvent::addComponentDelete($dbComp, $libDate);

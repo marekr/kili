@@ -1,12 +1,20 @@
 <?php namespace App;
 
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\SoftDeletes;
 
 
 class Component extends Model {
 
-    use SoftDeletes;
+    public static function boot()
+    {
+        parent::boot();
+
+        static::deleted(function($component)
+        {
+            $component->events()->update(array('component_id' => NULL));
+            $component->aliases()->delete();
+        });
+    }
 
     public function library()
     {
@@ -27,4 +35,5 @@ class Component extends Model {
     {
         return $this->hasMany('App\PackageEvent')->orderBy('date_occurred', 'desc');
     }
+
 }

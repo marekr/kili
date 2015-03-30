@@ -1,12 +1,20 @@
 <?php namespace App;
 
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\SoftDeletes;
 
 
 class Library extends Model {
 
-    use SoftDeletes;
+    public static function boot()
+    {
+        parent::boot();
+
+        static::deleted(function($library)
+        {
+            $library->events()->update(array('library_id' => NULL, 'component_id' => NULL));
+            $library->components()->delete();
+        });
+    }
 
     public function package()
     {
