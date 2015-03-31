@@ -73,7 +73,7 @@ class PackagesUpdate extends Command {
 
 	private function updatePackage(Package $package)
 	{
-		$base = 'C:\xampp\htdocs\kili\tmp\git';
+		$base = storage_path().'\repos\git';
 
 		$path = $base.'\\'.$package->id;
 		$git = new Git();
