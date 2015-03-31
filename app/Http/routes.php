@@ -14,6 +14,7 @@
 Route::get('/', 'HomeController@index');
 
 Route::get('package/{id}', 'PackageController@overview');
+Route::get('package/{id}/history/{page?}', 'PackageController@history');
 Route::get('library/{id}', 'LibraryController@overview');
 Route::get('component/{id}', 'ComponentController@index');
 Route::get('component/{id}/preview', 'ComponentController@preview');

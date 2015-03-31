@@ -9,8 +9,10 @@ class Package extends Model {
         return $this->hasMany('App\Library');
     }
 
-    public function events()
+    public function events($limit = 30)
     {
-        return $this->hasMany('App\PackageEvent')->orderBy('date_occurred', 'desc');
+        return $this->hasMany('App\PackageEvent')
+                    ->orderBy('date_occurred', 'desc')
+                    ->take($limit);
     }
 }

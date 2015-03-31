@@ -1,18 +1,11 @@
-@extends('app')
+@extends('package.wrapper')
 
-@section('content')
-
-<div class="container">
+@section('package_content')
 	<div class="row">
-		<div class="page-header">
-			<h1>{{ $package->name }}</h1>
-		</div>
-		<p class="lead">{{ $package->description }}</p>
 		<p>
-			<strong>Repository URL:</strong> {{ $package->repository_url }}
+			<strong>Repository</strong>
+			<input type="text" class="form-control" readonly="readonly" value="{{ $package->repository_url }}">
 		</p>
-	</div>
-	<div class="row">
 		<h2>Libraries</h2>
 		<table class="table table-striped">
 			<thead>
@@ -29,28 +22,4 @@
 			</tbody>
 		</table>
 	</div>
-	<div class="row">
-		<h2>History</h2>
-		<table class="table table-striped">
-			<thead>
-				<tr>
-					<th></th>
-					<th>Date</th>
-				</tr>
-			</thead>
-			<tbody>
-				@foreach( $package->events as $event )
-					<tr>
-						<td>
-							{{ $event }}
-						</td>
-						<td>
-							{{ $event->date_occurred }}
-						</td>
-					</tr>
-				@endforeach
-			</tbody>
-		</table>
-	</div>
-</div>
 @endsection

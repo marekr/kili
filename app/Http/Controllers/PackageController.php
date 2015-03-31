@@ -23,7 +23,7 @@ class PackageController extends Controller {
 	public function __construct()
 	{
 	}
-	
+
     /**
      * Show the profile for the given user.
      *
@@ -33,6 +33,18 @@ class PackageController extends Controller {
     public function overview($id)
     {
 		$p = Package::findOrFail($id);
-        return view('package.overview', ['package' => $p]);
+        return view('package.overview', ['package' => $p, 'page' => 'overview']);
+    }
+
+    /**
+     * Show the profile for the given user.
+     *
+     * @param  int  $id
+     * @return Response
+     */
+    public function history($id)
+    {
+		$p = Package::findOrFail($id);
+        return view('package.history', ['package' => $p, 'page' => 'history']);
     }
 }

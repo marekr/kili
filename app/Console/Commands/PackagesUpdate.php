@@ -86,7 +86,8 @@ class PackagesUpdate extends Command {
 		$git->setRepository($path);
 		//$git->pull();
 
-		$git->checkout('origin');
+		$git->reset->hard();
+		$git->checkout('origin',array('force' => true) );
 
 		$range = '';
 		if( !empty($package->repository_bookmark) )
