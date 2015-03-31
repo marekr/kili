@@ -1,6 +1,7 @@
 <?php namespace App\Http\Controllers;
 
 use App\Package;
+use Carbon\Carbon;
 
 class PackageController extends Controller {
 
@@ -45,6 +46,16 @@ class PackageController extends Controller {
     public function history($id)
     {
 		$p = Package::findOrFail($id);
-        return view('package.history', ['package' => $p, 'page' => 'history']);
+		$events = $p->eventsPaginated();
+
+		$eventsGrouped = $events->groupBy(function($date) {
+        	return Carbon::parse($date->date_occurred)->format('y-m-d');
+    	});
+		
+        return view('package.history', ['package' => $p,
+										'page' => 'history',
+										'events' => $eventsGrouped->toArray(),
+										'eventspaged' => $events
+										]);
     }
 }
