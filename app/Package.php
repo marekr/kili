@@ -9,6 +9,11 @@ class Package extends Model {
         return $this->hasMany('App\Library');
     }
 
+    public function librariesOrdered()
+    {
+        return $this->libraries()->orderBy('name', 'asc');
+    }
+
     public function events()
     {
         return $this->hasMany('App\PackageEvent')
@@ -17,6 +22,6 @@ class Package extends Model {
 
     public function eventsPaginated()
     {
-        return $this->events()->paginate(30);
+        return $this->events()->paginate(60);
     }
 }

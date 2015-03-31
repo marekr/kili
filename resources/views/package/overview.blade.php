@@ -13,7 +13,7 @@
 				<th>Type</th>
 			</thead>
 			<tbody>
-			@foreach( $package->libraries as $library )
+			@foreach( $package->librariesOrdered as $library )
 				<tr>
 					<td><a href="{{ action('LibraryController@overview', array($library->id)) }}">{{ $library->name }}</a></td>
 					<td>eeschema</td>

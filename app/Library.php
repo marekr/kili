@@ -28,6 +28,12 @@ class Library extends Model {
 
     public function events()
     {
-        return $this->hasMany('App\PackageEvent')->orderBy('date_occurred', 'desc');
+        return $this->hasMany('App\PackageEvent')
+                    ->orderBy('date_occurred', 'desc');
+    }
+
+    public function eventsPaginated()
+    {
+        return $this->events()->paginate(60);
     }
 }
