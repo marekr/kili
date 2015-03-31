@@ -9,7 +9,7 @@ use Exception;
 use Storage;
 use App\Package;
 use App\PackageEvent;
-use App\Kicad\EeschemaLibraryReader;
+use App\KiCad\EeschemaLibraryReader;
 use App\Component;
 use App\Library;
 use App\ComponentAlias;

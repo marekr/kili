@@ -5,7 +5,7 @@ use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Input\InputArgument;
 use Storage;
 use App\Component;
-use App\Kicad\EeschemaComponent;
+use App\KiCad\EeschemaComponent;
 
 class ComponentsRegenerate extends Command {
 
