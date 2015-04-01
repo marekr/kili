@@ -36,17 +36,68 @@ class EeschemaComponentPolyline extends EeschemaComponentObject
 		{
 			throw new Exception("Invalid number of polyline points");
 		}
-/*
 
-		if( $tmp[0] == 'F' )
+		$tok = strtok($line, " \n\t");
+		$tok = strtok(" \n\t");
+		$tok = strtok(" \n\t");
+		$tok = strtok(" \n\t");
+
+		$x = 0;
+		$y = 0;
+		for ($i = 0; $i < $this->count; $i++)
+		{
+			$x = strtok(" \n\t");
+			if( $x === false )
+				throw new Exception("Missing X");
+
+		    $y = strtok(" \n\t");
+			if( $y === false )
+				throw new Exception("Missing X");
+
+			$this->points[] = array($x, $y);
+		}
+
+		$last = strtok(" \n\t");
+		if( $last == 'F' )
 			$this->fill = self::SHAPE_FILLED;
 
-		if( $tmp[0] = 'f' )
+		if( $last = 'f' )
 			$this->fill = self::SHAPE_FILLED_WITH_BG_BODYCOLOR;
-			*/
+
+	}
+
+	public function getBoundingBox()
+	{
+		$result = array(
+			'minX' => 0,
+			'minY' => 0,
+			'maxX' => 0,
+			'maxY' => 0
+		);
+
+		foreach($this->points as $set)
+		{
+			$result['minX'] = min($result['minX'], $set[0]);
+			$result['maxX'] = max($result['maxX'], $set[0]);
+			$result['minY'] = min($result['minY'], $set[1]);
+			$result['maxY'] = max($result['maxY'], $set[1]);
+		}
+
+		return $result;
 	}
 
 	public function draw( &$svg, &$component )
 	{
+		$points = array();
+		foreach($this->points as $set)
+		{
+			$points[] = $component->transX($set[0]).','.$component->transY($set[1]);
+		}
+		$points = implode(' ', $points);
+
+		$svg->append(\SVGCreator\Element::POLYGON)
+			->attr('fill', 'none')
+			->attr('stroke', '#000000')
+			->attr('points', $points);
 	}
 }

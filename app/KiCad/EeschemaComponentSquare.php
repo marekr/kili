@@ -38,7 +38,7 @@ class EeschemaComponentSquare extends EeschemaComponentObject
 		if( $this->Width < 1 )
 			$this->Width = 1;
 
-		$width = abs($thisthis->EndX) + abs($this->PositionX);
+		$width = abs($this->EndX) + abs($this->PositionX);
 		$height = abs($this->EndY) + abs($this->PositionY);
 		$svg->append(new \SVGCreator\Elements\Rect())
 			->attr('width', $width)

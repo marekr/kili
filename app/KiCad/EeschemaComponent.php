@@ -55,6 +55,12 @@ class EeschemaComponent {
 				$minX = max($minX, abs($draw->PositionX));
 				$minY = max($minY, abs($draw->PositionY));
 			}
+			else if( $draw->ShapeType == EeschemaComponentObject::SHAPE_POLYLINE )
+			{
+				$bb = $draw->getBoundingBox();
+				$minX = $bb['maxX'];
+				$minY = $bb['maxY'];
+			}
 		}
 
 		$this->minWidth = $minX *2;

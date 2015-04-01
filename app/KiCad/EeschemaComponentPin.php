@@ -56,7 +56,8 @@ class EeschemaComponentPin extends EeschemaComponentObject
 	public function parse( $line )
 	{
 		$line = substr($line, 2);
-		list($this->Name,
+		$i = sscanf($line, "%s %s %d %d %d %s %d %d %d %d %s %s",
+			$this->Name,
 			$this->Number,
 			$this->PositionX,
 			$this->PositionY,
@@ -67,7 +68,7 @@ class EeschemaComponentPin extends EeschemaComponentObject
 			$this->Unit,
 			$this->Convert,
 			$this->Type,
-			$this->attrs) = sscanf($line, "%s %s %d %d %d %s %d %d %d %d %s %s");
+			$this->attrs);
 
 		$this->Name = filter_var($this->Name, FILTER_SANITIZE_STRING);
 		$this->Number = filter_var($this->Number, FILTER_SANITIZE_STRING);
