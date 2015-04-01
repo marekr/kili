@@ -31,12 +31,12 @@ class EeschemaComponent {
 
 	public function transX($x)
 	{
-		return $x + $this->minWidth/2;
+		return 200+$x + $this->minWidth/2;
 	}
 
 	public function transY($y)
 	{
-		return $this->minHeight/2 - $y;
+		return 200+$this->minHeight/2 - $y;
 	}
 
 	public function determineTransBB()
@@ -92,6 +92,11 @@ class EeschemaComponent {
 					->attr('y', $this->transY($draw->PositionY));
 			}
 			else if( $draw->ShapeType == EeschemaComponentObject::SHAPE_PIN )
+			{
+				if( $draw->Unit == 0 || $draw->Unit == 1 )
+				$draw->draw($svg, $this);
+			}
+			else if( $draw->ShapeType == EeschemaComponentObject::SHAPE_ARC )
 			{
 				if( $draw->Unit == 0 || $draw->Unit == 1 )
 				$draw->draw($svg, $this);

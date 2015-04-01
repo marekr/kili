@@ -40,23 +40,38 @@ class ComponentsRegenerate extends Command {
 	 */
 	public function fire()
 	{
-		$components = Component::with('library')->get();
-
-		foreach($components as $component)
+		$componentID = (int)$this->option('component');
+		if( $componentID != 0 )
 		{
-			$comp = new EeschemaComponent();
-			$comp->parseRaw( explode("\n",$component->raw) );
+			$component = Component::find($componentID);
+			$this->info('Regenerating component: ' . $component->name);
+			$this->redrawComponent($component);
+		}
+		else
+		{
+			$components = Component::with('library')->get();
 
-			try
+			foreach($components as $component)
 			{
-				$svg = $comp->draw();
-				$path = 'libraries/'.$component->library->id.'/'.$component->id.'.svg';
-				Storage::disk('images')->put($path, $svg);
+				$this->redrawComponent($component);
 			}
-			catch(\SVGCreator\SVGException $e)
-			{
-				echo "Error generating image for " . $component->name . "\n";
-			}
+		}
+	}
+
+	private function redrawComponent(Component $component)
+	{
+		$comp = new EeschemaComponent();
+		$comp->parseRaw( explode("\n",$component->raw) );
+
+		try
+		{
+			$svg = $comp->draw();
+			$path = 'libraries/'.$component->library->id.'/'.$component->id.'.svg';
+			Storage::disk('images')->put($path, $svg);
+		}
+		catch(\SVGCreator\SVGException $e)
+		{
+			echo "Error generating image for " . $component->name . "\n";
 		}
 	}
 
@@ -79,6 +94,7 @@ class ComponentsRegenerate extends Command {
 	protected function getOptions()
 	{
 		return [
+			['component', 'c', InputOption::VALUE_REQUIRED, 'Component ID', 0],
 		];
 	}
 
