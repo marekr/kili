@@ -6,7 +6,7 @@ use SVGCreator\Elements\Rect;
 
 class EeschemaComponentArc extends EeschemaComponentObject
 {
-	public $ShapeType = ShapeType::ARC;
+	public $ShapeType = EeschemaComponentObject::SHAPE_ARC;
 
 	public $PositionX = 0;
 	public $PositionY = 0;
