@@ -31,40 +31,31 @@ class EeschemaComponent {
 
 	public function transX($x)
 	{
-		return 200+$x + $this->minWidth/2;
+		return $x + $this->minWidth/2;
 	}
 
 	public function transY($y)
 	{
-		return 200+$this->minHeight/2 - $y;
+		return $this->minHeight/2 - $y;
 	}
 
 	public function determineTransBB()
 	{
 		$minX = 0;
 		$minY = 0;
+		$maxX = 0;
+		$maxY = 0;
 		foreach($this->drawItems as $draw)
 		{
-			if( $draw->ShapeType == EeschemaComponentObject::SHAPE_SQUARE )
-			{
-				$minX = max($minX, abs($draw->Width()));
-				$minY = max($minY, abs($draw->Height()));
-			}
-			else if( $draw->ShapeType != EeschemaComponentObject::SHAPE_POLYLINE )
-			{
-				$minX = max($minX, abs($draw->PositionX));
-				$minY = max($minY, abs($draw->PositionY));
-			}
-			else if( $draw->ShapeType == EeschemaComponentObject::SHAPE_POLYLINE )
-			{
-				$bb = $draw->getBoundingBox();
-				$minX = $bb['maxX'];
-				$minY = $bb['maxY'];
-			}
+			$bb = $draw->getBoundingBox();
+			$minX = min($minX,$bb['minX']);
+			$minY = min($minY,$bb['minY']);
+			$maxX = max($maxX,$bb['maxX']);
+			$maxY = max($maxY,$bb['maxY']);
 		}
 
-		$this->minWidth = $minX *2;
-		$this->minHeight = $minY *2;
+		$this->minWidth = abs($minX) + abs($maxX);
+		$this->minHeight = abs($minY) + abs($maxY);
 	}
 
 	public function draw()

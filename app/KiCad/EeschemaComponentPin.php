@@ -181,6 +181,18 @@ class EeschemaComponentPin extends EeschemaComponentObject
 		}
 	}
 
+	public function getBoundingBox()
+	{
+		$result = array(
+			'minX' => min($this->PositionX,0),
+			'minY' => min($this->PositionY,0),
+			'maxX' => max($this->PositionX,0),
+			'maxY' => max($this->PositionY,0)
+		);
+
+		return $result;
+	}
+
 	private function drawPinText(&$svg, &$component)
 	{
 		$x1 = $x = $this->PositionX;

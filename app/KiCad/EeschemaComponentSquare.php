@@ -33,6 +33,18 @@ class EeschemaComponentSquare extends EeschemaComponentObject
 		return abs($this->PositionY) + abs($this->EndY);
 	}
 
+	public function getBoundingBox()
+	{
+		$result = array(
+			'minX' => min($this->PositionX, $this->EndX),
+			'minY' => min($this->PositionY, $this->EndY),
+			'maxX' => max($this->PositionX, $this->EndX),
+			'maxY' => max($this->PositionY, $this->EndY)
+		);
+
+		return $result;
+	}
+
 	public function draw( &$svg, &$component )
 	{
 		if( $this->Width < 1 )

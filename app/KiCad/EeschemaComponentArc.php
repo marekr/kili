@@ -67,6 +67,18 @@ class EeschemaComponentArc extends EeschemaComponentObject
 		return $angle;
 	}
 
+	public function getBoundingBox()
+	{
+		$result = array(
+			'minX' => min($this->StartX,$this->EndX),
+			'minY' => min($this->StartY,$this->EndY),
+			'maxX' => max($this->StartX,$this->EndX),
+			'maxY' => max($this->StartY,$this->EndY)
+		);
+
+		return $result;
+	}
+
 	public function draw( &$svg, &$component )
 	{
 		$d = 'M '.$component->transX($this->StartX).','.$component->transY($this->StartY);
