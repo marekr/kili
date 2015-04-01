@@ -22,32 +22,31 @@ class EeschemaComponentArc extends EeschemaComponentObject
 	public $EndY = 0;
 	private $fill;
 
-	const FILLED_SHAPE = 1;
-	const FILLED_WITH_BG_BODYCOLOR = 2;
-
 	public function parse( $line )
 	{
 		$tmp = 0;
 		$line = substr($line, 2);
-		list($this->PositionX,
-			$this->PositionY,
-			$this->Radius,
-			$this->t1,
-			$this->t2,
-			$this->Unit,
-			$this->Convert,
-			$this->Width,
-			$tmp,
-			$this->StartX,
-			$this->StartY,
-			$this->EndX,
-			$this->EndY) = sscanf($line, "%d %d %d %d %d %d %d %d %255s %d %d %d %d");
+		$i = sscanf($line, "%d %d %d %d %d %d %d %d %255s %d %d %d %d",
+					$this->PositionX,
+					$this->PositionY,
+					$this->Radius,
+					$this->t1,
+					$this->t2,
+					$this->Unit,
+					$this->Convert,
+					$this->Width,
+					$tmp,
+					$this->StartX,
+					$this->StartY,
+					$this->EndX,
+					$this->EndY
+				);
 
 		if( $tmp[0] == 'F' )
-			$this->fill = self::FILLED_SHAPE;
+			$this->fill = self::SHAPE_FILLED;
 
 		if( $tmp[0] = 'f' )
-			$this->fill = self::FILLED_WITH_BG_BODYCOLOR;
+			$this->fill = self::SHAPE_FILLED_WITH_BG_BODYCOLOR;
 
 		$this->t1 = $this->normalize_angle($this->t1)/10;
 		$this->t2 = $this->normalize_angle($this->t2)/10;

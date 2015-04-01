@@ -50,7 +50,7 @@ class EeschemaComponent {
 				$minX = max($minX, abs($draw->Width()));
 				$minY = max($minY, abs($draw->Height()));
 			}
-			else
+			else if( $draw->ShapeType != EeschemaComponentObject::SHAPE_POLYLINE )
 			{
 				$minX = max($minX, abs($draw->PositionX));
 				$minY = max($minY, abs($draw->PositionY));
@@ -75,32 +75,8 @@ class EeschemaComponent {
 
 		foreach($this->drawItems as $draw)
 		{
-			if( $draw->ShapeType == EeschemaComponentObject::SHAPE_SQUARE )
-			{
-				if( $draw->Width < 1 )
-					$draw->Width = 1;
-
-				$width = abs($draw->EndX) + abs($draw->PositionX);
-				$height = abs($draw->EndY) + abs($draw->PositionY);
-				$svg->append(new \SVGCreator\Elements\Rect())
-					->attr('width', $width)
-					->attr('height', $height)
-					->attr('fill', '#ffffff')
-					->attr('stroke-width', $draw->Width)
-					->attr('stroke', '#000000')
-					->attr('x', $this->transX($draw->PositionX))
-					->attr('y', $this->transY($draw->PositionY));
-			}
-			else if( $draw->ShapeType == EeschemaComponentObject::SHAPE_PIN )
-			{
-				if( $draw->Unit == 0 || $draw->Unit == 1 )
-				$draw->draw($svg, $this);
-			}
-			else if( $draw->ShapeType == EeschemaComponentObject::SHAPE_ARC )
-			{
-				if( $draw->Unit == 0 || $draw->Unit == 1 )
-				$draw->draw($svg, $this);
-			}
+			if( $draw->Unit == 0 || $draw->Unit == 1 )
+			$draw->draw($svg, $this);
 		}
 		return $svg->getString();
 	}
@@ -220,13 +196,12 @@ class EeschemaComponent {
 				break;
 			}
 
+			$obj = null;
 			switch( $raw[$i][0] )
 			{
 				case 'A':
 					//arc
 					$obj = new EeschemaComponentArc();
-					$obj->parse($raw[$i]);
-					$this->drawItems[] = $obj;
 					break;
 				case 'C':
 					//circle
@@ -237,17 +212,14 @@ class EeschemaComponent {
 				case 'S':
 					//square
 					$obj = new EeschemaComponentSquare();
-					$obj->parse($raw[$i]);
-					$this->drawItems[] = $obj;
 					break;
 				case 'X':
 					//pin desc
 					$obj = new EeschemaComponentPin();
-					$obj->parse($raw[$i]);
-					$this->drawItems[] = $obj;
 					break;
 				case 'P':
 					//polyline
+					$obj = new EeschemaComponentPolyline();
 					break;
 				case 'B':
 					//beizer Curves
@@ -256,6 +228,12 @@ class EeschemaComponent {
 					continue;
 				default:
 					break;
+			}
+
+			if( $obj != null )
+			{
+				$obj->parse($raw[$i]);
+				$this->drawItems[] = $obj;
 			}
 		}
 	}

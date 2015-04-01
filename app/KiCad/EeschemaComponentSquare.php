@@ -32,4 +32,21 @@ class EeschemaComponentSquare extends EeschemaComponentObject
 	{
 		return abs($this->PositionY) + abs($this->EndY);
 	}
+
+	public function draw( &$svg, &$component )
+	{
+		if( $this->Width < 1 )
+			$this->Width = 1;
+
+		$width = abs($thisthis->EndX) + abs($this->PositionX);
+		$height = abs($this->EndY) + abs($this->PositionY);
+		$svg->append(new \SVGCreator\Elements\Rect())
+			->attr('width', $width)
+			->attr('height', $height)
+			->attr('fill', '#ffffff')
+			->attr('stroke-width', $this->Width)
+			->attr('stroke', '#000000')
+			->attr('x', $component->transX($this->PositionX))
+			->attr('y', $component->transY($this->PositionY));
+	}
 }
