@@ -42,10 +42,10 @@ class EeschemaComponentArc extends EeschemaComponentObject
 					$this->EndY
 				);
 
-		if( $tmp[0] == 'F' )
+		if( $tmp == 'F' )
 			$this->fill = self::SHAPE_FILLED;
 
-		if( $tmp[0] = 'f' )
+		if( $tmp = 'f' )
 			$this->fill = self::SHAPE_FILLED_WITH_BG_BODYCOLOR;
 
 		$this->t1 = $this->normalize_angle($this->t1)/10;
