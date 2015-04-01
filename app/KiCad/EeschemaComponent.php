@@ -48,6 +48,7 @@ class EeschemaComponent {
 		foreach($this->drawItems as $draw)
 		{
 			$bb = $draw->getBoundingBox();
+
 			$minX = min($minX,$bb['minX']);
 			$minY = min($minY,$bb['minY']);
 			$maxX = max($maxX,$bb['maxX']);

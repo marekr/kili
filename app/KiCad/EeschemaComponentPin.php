@@ -184,10 +184,10 @@ class EeschemaComponentPin extends EeschemaComponentObject
 	public function getBoundingBox()
 	{
 		$result = array(
-			'minX' => min($this->PositionX,0),
-			'minY' => min($this->PositionY,0),
-			'maxX' => max($this->PositionX,0),
-			'maxY' => max($this->PositionY,0)
+			'minX' => min($this->PositionX-100,0),
+			'minY' => min($this->PositionY-100,0),
+			'maxX' => max($this->PositionX+100,0),
+			'maxY' => max($this->PositionY+100,0)
 		);
 
 		return $result;
